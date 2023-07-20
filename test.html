@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="demo.css" />
+  </head>
+  <body>
+    <div style="position: absolute; height: 100%; width: 100%" id="clutter">
+      <div id="banner-image">
+        <img
+          src="resources/logo.webp"
+          style="margin-top: 70px; margin-left: 150px"
+        />
+        <svg
+          viewBox="0 0 64 64"
+          xmlns="http://www.w3.org/2000/svg"
+          width="64"
+          height="64"
+          fill="#000000"
+          style="position: absolute; top: 3%; left: 95%"
+        >
+          <circle
+            cx="32"
+            cy="32"
+            r="30"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2"
+          />
+          <line
+            x1="20"
+            y1="20"
+            x2="44"
+            y2="44"
+            stroke="#ffffff"
+            stroke-width="2"
+          />
+          <line
+            x1="20"
+            y1="44"
+            x2="44"
+            y2="20"
+            stroke="#ffffff"
+            stroke-width="2"
+          />
+        </svg>
+        <div style="margin-top: 150px; margin-left: 150px">
+          <div style="color: rgb(210, 210, 255)">
+            MAL : 8.77⭐ Ranked #39 Chapters: 72
+          </div>
+          <br />
+          <br />
+          <br />
+          <div style="display: flex">
+            <div
+              style="
+                color: white;
+                width: 1000px;
+                letter-spacing: 3px;
+                font-size: 18px;
+                line-height: 23px;
+                text-align: justify;
+              "
+            >
+              The Abyss—a gaping chasm stretching down into the depths of the
+              earth, filled with mysterious creatures and relics from a time
+              long past. How did it come to be? What lies at the bottom?
+              Countless brave individuals, known as Divers, have sought to solve
+              these mysteries of the Abyss, fearlessly descending into its
+              darkest realms. The best and bravest of the Divers, the White
+              Whistles, are hailed as legends by those who remain on the
+              surface.
+              <br />
+              <br />
+              <br />
+              Riko, daughter of the missing White Whistle Lyza the Annihilator,
+              aspires to become like her mother and explore the furthest reaches
+              of the Abyss. However, just a novice Red Whistle herself, she is
+              only permitted to roam its most upper layer. Even so, Riko has a
+              chance encounter with a mysterious robot with the appearance of an
+              ordinary young boy. She comes to name him Reg, and he has no
+              recollection of the events preceding his discovery.
+              <br />
+              <br />
+              <br />
+              Certain that the technology to create Reg must come from deep
+              within the Abyss, the two decide to venture forth into the chasm
+              to recover his memories and see the bottom of the great pit with
+              their own eyes. However, they know not of the harsh reality that
+              is the true existence of the Abyss.
+            </div>
+            <div
+              style="
+                background: url('resources/chap1.webp');
+                height: 400px;
+                width: 300px;
+                margin-top: 40px;
+                margin-left: 500px;
+                position: relative;
+                border: 6px solid black;
+                background-repeat: no-repeat;
+                background-size: cover;
+                border-radius: 20px;
+              "
+            >
+              <div
+                style="
+                  background-color: black;
+                  width: 60%;
+                  color: white;
+                  font-size: 20px;
+                  padding: 8px;
+                  border-bottom: 6px solid black;
+                  border-right: 6px solid black;
+                  border-radius: 12px 0 120px 0;
+                  opacity: 0.7;
+                "
+                id="starter"
+              >
+                Continue reading
+              </div>
+              <div
+                style="
+                  background-color: black;
+                  position: absolute;
+                  bottom: 0;
+                  right: 0;
+                  width: 33%;
+                  color: white;
+                  font-size: 20px;
+                  padding: 8px;
+                  border-top: 6px solid black;
+                  border-left: 6px solid black;
+                  border-radius: 20px 0 12px 0;
+                  opacity: 0.7;
+                "
+              >
+                Chapter 1
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<button id="starter">hello</button>-->
+    <div
+      id="image-container"
+      style="height: 100%; width: 50%; margin-left: auto; margin-right: auto"
+    ></div>
+
+    <script>
+      const imagePaths = [
+        // Replace the paths below with the actual image paths
+        "resources/29.png",
+        "resources/30.png",
+        "resources/31.png",
+        "resources/32.png",
+        "resources/33.png",
+        "resources/34.png",
+        "resources/35.webp",
+      ];
+      const imageContainer = document.getElementById("image-container");
+      const democlut = document.getElementById("clutter");
+
+      let currentIndex = 1;
+      let yOffset = 0;
+      let images = [];
+      let audio = [
+        new Audio(
+          "resources/Music/Made in Abyss Season 2 OST, OST 3 - “Tomorrowland” by @kpenkin [peL_gicRSGA].opus"
+        ),
+        new Audio("resources/Music/chirp.opus"),
+        new Audio("resources/Music/creepy.opus"),
+        new Audio("resources/Music/bed.opus"),
+        new Audio("resources/Music/night.opus"),
+      ];
+
+      audio[3].flag = true;
+      audio[4].flag = true;
+      audio[1].flag = true;
+
+      function loadImage(path) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.src = path;
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+        });
+      }
+
+      async function loadImages(paths) {
+        const promises = paths.map(loadImage);
+        return Promise.all(promises);
+      }
+
+      function updateScrollPosition() {
+        yOffset -= 1; // Adjust the scrolling speed
+
+        if (currentIndex == 1 && yOffset == -200) {
+          audio[1].play();
+          audio[1].volume = 0;
+          fadein(audio[1], 5);
+        }
+
+        if (currentIndex == 0 && yOffset == -1200) {
+          audio[3].play();
+          audio[3].volume = 0;
+          fadein(audio[3], 2, 0.2);
+        }
+
+        if (audio[1].currentTime >= audio[1].duration - 2 && audio[1].flag) {
+          audio[1].flag = false;
+          fadeout(audio[1], 2);
+        }
+
+        if (audio[3].currentTime >= audio[3].duration - 2 && audio[3].flag) {
+          audio[3].flag = false;
+          fadeout(audio[3], 10);
+        }
+
+        if (audio[4].currentTime >= audio[4].duration - 2 && audio[4].flag) {
+          audio[4].flag = false;
+          fadeout(audio[4], 5);
+        }
+
+        if (yOffset == -300 && currentIndex == 2) {
+          audio[0].play();
+          audio[0].volume = 0.2;
+          fadein(audio[0], 4);
+        }
+        if (yOffset == -1187 && currentIndex == 4) {
+          fadeout(audio[0], 3, 0.4);
+        }
+        if (yOffset == -1587 && currentIndex == 5) {
+          fadein(audio[0], 10, 0.5);
+        }
+
+        if (currentIndex == 4 && yOffset == -1200) {
+          audio[2].play();
+        }
+
+        imageContainer.style.transform =
+          "translateY(" + (currentIndex * -1600 + yOffset) + "px)";
+
+        if (yOffset <= -1600) {
+          yOffset = 0;
+          currentIndex = currentIndex + 1;
+          imageContainer.appendChild(images[currentIndex]);
+          imageContainer.appendChild(images[currentIndex + 1]);
+        }
+        requestAnimationFrame(updateScrollPosition);
+      }
+
+      function fadein(audio, ftime, tolev = 1) {
+        var curv = audio.volume;
+        var fade = setInterval(function () {
+          if (audio.volume != tolev) {
+            var temp = audio.volume + 0.01;
+            audio.volume = temp;
+            if (temp >= tolev - 0.1 && temp <= tolev) {
+              audio.volume = tolev;
+            }
+          }
+          if (audio.volume == tolev) {
+            clearInterval(fade);
+          }
+        }, (ftime * 1000) / (tolev * 100 - curv * 100));
+      }
+
+      function fadeout(audio, ftime, tolev = 0.01) {
+        var fade = setInterval(function () {
+          if (audio.volume >= tolev) {
+            audio.volume = audio.volume - 0.01;
+          }
+          if (audio.volume < tolev) {
+            clearInterval(fade);
+          }
+        }, (ftime * 1000) / (100 - tolev * 100));
+      }
+
+      async function main() {
+        images = await loadImages(imagePaths);
+        currentIndex = 0;
+        imageContainer.appendChild(images[currentIndex]);
+        imageContainer.appendChild(images[currentIndex + 1]);
+        audio[4].play();
+        audio[4].volume = 0;
+        fadein(audio[4], 2, 0.4);
+        setTimeout(() => {
+          requestAnimationFrame(updateScrollPosition);
+        }, 2000);
+      }
+      document.getElementById("starter").addEventListener("click", function () {
+        democlut.style.animation = "fadeout 3s";
+        democlut.addEventListener("animationend", function () {
+          democlut.style.display = "none";
+          imageContainer.style.animation = "fadein 2s";
+          main();
+          imageContainer.addEventListener("animationend", function () {
+            imageContainer.style.opacity = "1";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    #image-container {
+      width: 1139px;
+      height: 1600px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="starter">hello</button>
+  <div id="image-container"></div>
+
+  <script>
+    const imagePaths = [
+      // Replace the paths below with the actual image paths
+      "resources/29.png",
+      "resources/30.png",
+      "resources/31.png",
+      "resources/32.png",
+      "resources/33.png",
+      "resources/34.png",
+      "resources/35.webp",
+    ];
+
+    let currentIndex = 1;
+    let yOffset = 0;
+    console.log(yOffset)
+    let images = [];
+    let audio = [new Audio(
+      '/home/hecarim/Documents/demofinal/resources/Music/Made in Abyss Season 2 OST, OST 3 - “Tomorrowland” by @kpenkin [peL_gicRSGA].opus'),
+    new Audio('resources/Music/chirp.opus'),
+    new Audio('resources/Music/creepy.opus'),
+    new Audio('resources/Music/bed.opus'),
+    new Audio('resources/Music/night.opus')]
+
+    audio[3].flag = true
+    audio[4].flag = true
+    audio[1].flag = true
+
+    function loadImage(path) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.src = path;
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+      });
+    }
+
+    async function loadImages(paths) {
+      const promises = paths.map(loadImage);
+      return Promise.all(promises);
+    }
+
+    function updateScrollPosition() {
+      yOffset -= 1; // Adjust the scrolling speed
+
+      if (currentIndex == 1 && yOffset == -200) {
+        audio[1].play()
+        audio[1].volume = 0
+        fadein(audio[1], 5)
+      }
+
+      if (currentIndex == 0 && yOffset == -1200) {
+        audio[3].play()
+        audio[3].volume = 0
+        fadein(audio[3], 2, 0.2)
+      }
+
+      if (audio[1].currentTime >= audio[1].duration - 2 && audio[1].flag) {
+        audio[1].flag = false
+        fadeout(audio[1], 2)
+      }
+
+      if (audio[3].currentTime >= audio[3].duration - 2 && audio[3].flag) {
+        audio[3].flag = false
+        fadeout(audio[3], 10)
+      }
+
+      if (audio[4].currentTime >= audio[4].duration - 2 && audio[4].flag) {
+        audio[4].flag = false
+        fadeout(audio[4], 5)
+      }
+
+      if (yOffset == -300 && currentIndex == 2) {
+        audio[0].play()
+        audio[0].volume = 0.2
+        fadein(audio[0], 4)
+      }
+      if (yOffset == -1187 && currentIndex == 4) {
+        fadeout(audio[0], 5, 0.1)
+      }
+      if (yOffset == -1587 && currentIndex == 5) {
+        fadeout(audio[0], 10, 0.5)
+      }
+
+      if (currentIndex == 4 && yOffset == -1200) {
+        audio[2].play()
+      }
+
+      const imageContainer = document.getElementById("image-container");
+      imageContainer.style.backgroundPosition = `0px ${yOffset}px, 0px ${1600 + yOffset}px`;
+
+      if (yOffset <= -1600) {
+        yOffset = 0;
+        currentIndex = (currentIndex + 1);
+        const nextImage = images[currentIndex];
+        imageContainer.style.backgroundImage = `url('${nextImage.src}'),
+                    url('${images[currentIndex + 1].src}')`;
+        imageContainer.style.backgroundRepeat = "no-repeat, no-repeat"
+        imageContainer.style.backgroundPosition = "0% 0%, 0% 1600px"
+      }
+      requestAnimationFrame(updateScrollPosition);
+    }
+
+    function fadein(audio, ftime, tolev = 1) {
+      var curv = audio.volume
+      var fade = setInterval(function () {
+        if (audio.volume != tolev) {
+          var temp = audio.volume + 0.01
+          audio.volume = temp
+          if (temp >= tolev - 0.1 && temp <= tolev) {
+            audio.volume = tolev
+          }
+        }
+        if (audio.volume == tolev) {
+          clearInterval(fade)
+        }
+      }, (ftime * 1000) / (tolev * 100 - curv * 100))
+    }
+
+    function fadeout(audio, ftime, tolev = 0.01) {
+      var fade = setInterval(function () {
+        if (audio.volume >= tolev) {
+          audio.volume = audio.volume - 0.01
+        }
+        if (audio.volume < tolev) {
+          clearInterval(fade)
+        }
+      }, (ftime * 1000) / (100 - tolev * 100))
+    }
+
+    async function main() {
+      images = await loadImages(imagePaths);
+      currentIndex = 0
+
+      document.getElementById('starter').addEventListener('click', function () {
+        const imageContainer = document.getElementById("image-container");
+        const firstImage = images[currentIndex];
+
+        imageContainer.style.backgroundImage = `url('${firstImage.src}'),
+                        url('${images[currentIndex + 1].src}')`;
+        imageContainer.style.backgroundRepeat = "no-repeat, no-repeat"
+        imageContainer.style.backgroundPosition = "0% 0%, 0% 1600px"
+
+        audio[4].play()
+        audio[4].volume = 0
+        fadein(audio[4], 2, 0.4)
+
+        setTimeout(() => {
+          requestAnimationFrame(updateScrollPosition);
+        }, 2000);
+      })
+    }
+    main();
+  </script>
+</body>
+
+</html>
